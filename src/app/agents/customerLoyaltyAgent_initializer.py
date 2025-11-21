@@ -9,7 +9,7 @@ from tools.discountLogic import calculate_discount
 # from tools.aiSearchTools import product_data_ai_search
 from dotenv import load_dotenv
 load_dotenv()
-
+# a change
 CL_PROMPT_TARGET = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'prompts', 'CustomerLoyaltyAgentPrompt.txt')
 with open(CL_PROMPT_TARGET, 'r', encoding='utf-8') as file:
     CL_PROMPT = file.read()
