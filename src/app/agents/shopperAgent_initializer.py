@@ -25,7 +25,7 @@ with project_client:
     try:
         agent_id = os.environ.get("cora")
         if agent_id:
-            print(f"Getting agent, ID: {agent.id}")
+            print(f"Getting agent, ID: {agent_id}")
             agent = project_client.agents.get_agent(agent_id)
             print(f"Retrieved existing agent, ID: {agent.id}")
     except Exception as e:
