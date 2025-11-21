@@ -1,0 +1,65 @@
+name: Build and Deploy to Azure Container Registry
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Generate .env file in src/
+        run: |
+          if [ ! -d "src" ]; then
+            echo "Error: src/ directory does not exist"
+            exit 1
+          fi
+          printf '%s' "${{ secrets.ENV }}" > src/.env
+        shell: bash
+      
+      - name: Log in to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+          username: ${{ secrets.AZURE_CONTAINER_USERNAME }}
+          password: ${{ secrets.AZURE_CONTAINER_PASSWORD }}
+      
+      - name: Build and push Docker image
+        id: build-and-push
+        run: |
+          IMAGE_TAG="latest"
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          FULL_IMAGE_NAME="${{ secrets.AZURE_CONTAINER_REGISTRY }}/${REPO_NAME}:${IMAGE_TAG}"
+          
+          # Build the Docker image from src/ directory
+          docker build -t "${FULL_IMAGE_NAME}" ./src
+          
+          # Push the image to ACR
+          docker push "${FULL_IMAGE_NAME}"
+          
+          # Set output for image tag
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        shell: bash
+      
+      - name: Clean up .env file
+        if: always()
+        run: |
+          if [ -f src/.env ]; then
+            shred -vfz -n 3 src/.env 2>/dev/null || rm -f src/.env
+          fi
+        shell: bash
+      
+      - name: Summary
+        run: |
+          echo "### Deployment Summary :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image Tag**: ${{ steps.build-and-push.outputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Registry**: ${{ secrets.AZURE_CONTAINER_REGISTRY }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ✅ Successfully deployed" >> $GITHUB_STEP_SUMMARY
