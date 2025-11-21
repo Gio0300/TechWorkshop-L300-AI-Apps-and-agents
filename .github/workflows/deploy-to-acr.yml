@@ -33,10 +33,10 @@ jobs:
       
       - name: Build and push Docker image
         id: build-and-push
-        run: |
+        run: 
           IMAGE_TAG="latest"
           REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          FULL_IMAGE_NAME="${{ secrets.AZURE_CONTAINER_REGISTRY }}/${REPO_NAME}:${IMAGE_TAG}"
+          FULL_IMAGE_NAME="${{ secrets.AZURE_CONTAINER_REGISTRY }}/chat-app:${IMAGE_TAG}"
           
           # Build the Docker image from src/ directory
           docker build -t "${FULL_IMAGE_NAME}" ./src
