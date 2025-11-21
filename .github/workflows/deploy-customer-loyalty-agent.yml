@@ -5,6 +5,9 @@ on:
     # Paths include the initializer, prompt, workflow, and any associated tools
     paths:
       - 'src/app/agents/customerLoyaltyAgent_initializer.py'
+      - 'src/app/agents/shopperAgent_initializer.py'
+      - 'src/app/agents/inventoryAgent_initializer.py'
+      - 'src/app/agents/interiorDesignAgent_initializer.py'
       - 'src/app/tools/discountLogic.py'
       - 'src/prompts/CustomerLoyaltyAgentPrompt.txt'
       - '.github/workflows/deploy-customer-loyalty-agent.yml'
