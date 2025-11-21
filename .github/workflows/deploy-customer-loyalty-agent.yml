@@ -41,8 +41,17 @@ jobs:
 
       - name: Run customer loyalty agent initializer
         run: |
-          python app/agents/customerLoyaltyAgent_initializer.py
+          python src/app/agents/customerLoyaltyAgent_initializer.py
 
       - name: Run Interior designer agent initializer
         run: |
-          python app/agents/customerLoyaltyAgent_initializer.py
+          python src/app/agents/customerLoyaltyAgent_initializer.py
+
+      - name: Run Shopper agent initializer
+        run: |
+          python src/app/agents/shopperAgent_initializer.py
+
+      - name: Run Inventory agent initializer
+        run: |
+          python src/app/agents/inventoryAgent_initializer.py
+          
