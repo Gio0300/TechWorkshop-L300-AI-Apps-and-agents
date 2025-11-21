@@ -14,7 +14,7 @@ jobs:
       
       - name: Generate .env file in src/
         run: |
-          echo "${{ secrets.ENV }}" > src/.env
+          printf '%s' "${{ secrets.ENV }}" > src/.env
         shell: bash
       
       - name: Log in to Azure Container Registry
@@ -28,7 +28,8 @@ jobs:
         id: build-and-push
         run: |
           IMAGE_TAG="latest"
-          FULL_IMAGE_NAME="${{ secrets.AZURE_CONTAINER_REGISTRY }}/${{ github.repository }}:${IMAGE_TAG}"
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          FULL_IMAGE_NAME="${{ secrets.AZURE_CONTAINER_REGISTRY }}/${REPO_NAME}:${IMAGE_TAG}"
           
           # Build the Docker image from src/ directory
           docker build -t "${FULL_IMAGE_NAME}" ./src
