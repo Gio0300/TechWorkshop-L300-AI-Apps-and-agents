@@ -14,6 +14,10 @@ jobs:
       
       - name: Generate .env file in src/
         run: |
+          if [ ! -d "src" ]; then
+            echo "Error: src/ directory does not exist"
+            exit 1
+          fi
           printf '%s' "${{ secrets.ENV }}" > src/.env
         shell: bash
       
@@ -44,7 +48,9 @@ jobs:
       - name: Clean up .env file
         if: always()
         run: |
-          rm -f src/.env
+          if [ -f src/.env ]; then
+            shred -vfz -n 3 src/.env 2>/dev/null || rm -f src/.env
+          fi
         shell: bash
       
       - name: Summary
